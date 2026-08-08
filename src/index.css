@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-onyx font-sans text-chiffon antialiased;
+  }
+  ::selection {
+    @apply bg-milano text-chiffon;
+  }
+
+  /* Tailwind v3 preflight removes the pointer cursor — restore it for
+     interactive elements (ui-ux-pro-max: cursor-pointer rule). */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  label[for],
+  select,
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  /* Accessible focus ring for keyboard users only (ui-styling a11y pattern).
+     The outline follows the element's own border-radius in modern browsers. */
+  :focus-visible {
+    outline: 2px solid rgba(255, 251, 212, 0.85);
+    outline-offset: 3px;
+  }
+
+  /* Respect reduced-motion: kill CSS animations/transitions and smooth scroll. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

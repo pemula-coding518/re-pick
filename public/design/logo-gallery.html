@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Repick — Logo Explorations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root { --milano:#A90E02; --milano-hi:#E2230F; --chiffon:#FFFBD4; --onyx:#0E0E10; --carbon:#121214; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--onyx); color:var(--chiffon); font-family:'Space Grotesk',system-ui,sans-serif; }
+  header { padding:56px 56px 28px; display:flex; align-items:baseline; justify-content:space-between; border-bottom:1px solid rgba(255,251,212,.12); }
+  header h1 { font-family:'Anton',sans-serif; font-size:38px; letter-spacing:.04em; text-transform:uppercase; font-weight:400; }
+  header h1 span { color:var(--milano-hi); }
+  header p { font-size:11px; letter-spacing:.34em; text-transform:uppercase; color:rgba(255,251,212,.45); }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,251,212,.08); }
+  .card { background:var(--onyx); padding:64px 40px 40px; display:flex; flex-direction:column; align-items:center; min-height:520px; }
+  .stage { flex:1; display:flex; align-items:center; justify-content:center; width:100%; padding:24px 0; }
+  .stage svg, .stage img { max-width:240px; height:auto; }
+  .lockup { display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .lockup .row { display:flex; align-items:center; gap:14px; }
+  .lockup .row img { width:44px; height:44px; }
+  .lockup .row .name { font-family:'Anton',sans-serif; font-size:64px; letter-spacing:.02em; text-transform:uppercase; }
+  .lockup .row .name b { color:var(--milano-hi); }
+  .lockup .tag { font-size:11px; letter-spacing:.44em; text-transform:uppercase; color:rgba(255,251,212,.55); }
+  .meta { text-align:center; border-top:1px solid rgba(255,251,212,.12); width:100%; padding-top:22px; }
+  .meta .idx { font-family:'Anton',sans-serif; font-size:13px; letter-spacing:.3em; color:var(--milano-hi); }
+  .meta h2 { font-family:'Anton',sans-serif; font-size:22px; letter-spacing:.05em; text-transform:uppercase; margin-top:6px; font-weight:400; }
+  .meta p { font-size:12.5px; color:rgba(255,251,212,.55); margin-top:8px; line-height:1.6; max-width:300px; }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} .card{min-height:auto;} header{padding:32px 24px 20px;} }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Repick <span>—</span> Logo Explorations</h1>
+    <p>See It. Pick It. / 01–03</p>
+  </header>
+  <div class="grid">
+    <!-- Concept A -->
+    <div class="card">
+      <div class="stage">
+        <img src="../logo-mark.svg" alt="Repick tag mark" />
+      </div>
+      <div class="meta">
+        <div class="idx">01 / TAG MARK</div>
+        <h2>The Buyback Tag</h2>
+        <p>Price-tag silhouette with a punched string hole — the moment a jacket gets a valuation. Milano Red fills the tag, Lemon Chiffon draws the R.</p>
+      </div>
+    </div>
+    <!-- Concept B -->
+    <div class="card">
+      <div class="stage">
+        <svg viewBox="0 0 64 64" fill="none" width="240">
+          <defs>
+            <path id="rk-ring" d="M32 7 a25 25 0 0 1 0 50 a25 25 0 0 1 0 -50" />
+          </defs>
+          <circle cx="32" cy="32" r="30" fill="#0E0E10"/>
+          <circle cx="32" cy="32" r="30" fill="none" stroke="#A90E02" stroke-width="2.5"/>
+          <circle cx="32" cy="32" r="25.5" fill="none" stroke="#FFFBD4" stroke-width="0.75" opacity="0.45"/>
+          <text font-family="'Space Grotesk', sans-serif" font-size="7" letter-spacing="2.2" fill="#FFFBD4" font-weight="600">
+            <textPath href="#rk-ring" startOffset="50%" text-anchor="middle">REPICK · VINTAGE OUTERWEAR · JAKARTA</textPath>
+          </text>
+          <g stroke="#FFFBD4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M27 41 V25"/>
+            <path d="M30 25 a6.5 6.5 0 0 1 6.5 6.5 a6.5 6.5 0 0 1 -6.5 6.5"/>
+            <path d="M33 36.5 L39.5 42.5"/>
+          </g>
+          <circle cx="45" cy="45" r="3.2" fill="#A90E02"/>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="idx">02 / EMBLEM</div>
+        <h2>The Vintage Badge</h2>
+        <p>Circular badge with ring lettering — thrift-store stamp energy. Built for tags, patches, and woven labels.</p>
+      </div>
+    </div>
+    <!-- Concept C -->
+    <div class="card">
+      <div class="stage">
+        <div class="lockup">
+          <div class="row">
+            <img src="../logo-mark.svg" alt="" />
+            <span class="name">Repick<b>.</b></span>
+          </div>
+          <div class="tag">SEE IT. PICK IT.</div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="idx">03 / WORDMARK</div>
+        <h2>Lockup System</h2>
+        <p>The tag mark anchors an Anton wordmark with a Milano Red period — slogan sits underneath as a whispered label.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

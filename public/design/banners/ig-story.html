@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Repick — IG Story 1080×1920</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; width:1080px; height:1920px; overflow:hidden; }
+  body { position:relative; background:#0E0E10; color:#FFFBD4; font-family:'Space Grotesk',system-ui,sans-serif; }
+  .bg { position:absolute; inset:0; overflow:hidden; }
+  .blob { position:absolute; border-radius:50%; }
+  .b1 { width:900px; height:900px; left:-280px; top:-200px;
+        background:radial-gradient(circle at 35% 35%, rgba(226,35,15,.92), rgba(169,14,2,.4) 55%, transparent 75%); }
+  .b2 { width:820px; height:820px; right:-260px; top:460px;
+        background:radial-gradient(circle at 55% 45%, rgba(255,251,212,.15), transparent 70%); }
+  .b3 { width:700px; height:700px; left:-120px; bottom:-260px;
+        background:radial-gradient(circle at 50% 50%, rgba(143,12,2,.6), transparent 72%); }
+  .grid { position:absolute; inset:0;
+          background-image:linear-gradient(rgba(255,251,212,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,251,212,.035) 1px,transparent 1px);
+          background-size:80px 80px; }
+  .vignette { position:absolute; inset:0;
+          background:radial-gradient(ellipse 80% 62% at 50% 45%, transparent 38%, rgba(14,14,16,.75) 100%); }
+  .content { position:relative; height:100%; padding:110px 90px; display:flex; flex-direction:column; }
+  header { display:flex; align-items:center; justify-content:space-between; }
+  .brand { display:flex; align-items:center; gap:22px; }
+  .brand img { width:84px; height:84px; }
+  .brand .name { font-family:'Anton',sans-serif; font-size:56px; letter-spacing:.02em; }
+  .handle { display:inline-flex; align-items:center; gap:16px; font-size:26px; letter-spacing:.08em; color:rgba(255,251,212,.9);
+            border:1.5px solid rgba(255,251,212,.28); border-radius:999px; padding:14px 30px; }
+  .handle svg { width:32px; height:32px; }
+  .middle { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .eyebrow { font-size:22px; letter-spacing:.55em; text-transform:uppercase; color:rgba(255,251,212,.6); }
+  h1 { margin:34px 0 0; font-family:'Anton',sans-serif; font-weight:400; font-size:216px; line-height:.95; text-transform:uppercase; letter-spacing:.01em; }
+  h1 .red { background:linear-gradient(180deg,#FF7A5C,#E2230F 60%,#8F0C02); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { margin-top:44px; max-width:780px; font-size:36px; line-height:1.5; color:rgba(255,251,212,.75); font-weight:300; }
+  .sub b { color:#FFFBD4; font-weight:600; }
+  footer { display:flex; flex-direction:column; gap:36px; }
+  .cta { display:flex; align-items:center; justify-content:center; min-height:96px; border-radius:999px;
+         background:linear-gradient(135deg,#E2230F,#8F0C02); color:#FFFBD4; font-size:30px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+         box-shadow:0 22px 70px rgba(169,14,2,.5), inset 0 1.5px 0 rgba(255,251,212,.35); }
+  .micro { text-align:center; font-size:19px; letter-spacing:.34em; text-transform:uppercase; color:rgba(255,251,212,.42); }
+</style>
+</head>
+<body>
+  <div class="bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="grid"></div>
+  <div class="vignette"></div>
+  <div class="content">
+    <header>
+      <span class="brand">
+        <img src="../../logo-mark.svg" alt="" />
+        <span class="name">REPICK</span>
+      </span>
+      <span class="handle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.4a4 4 0 1 1-7.9 1.2 4 4 0 0 1 7.9-1.2z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+        @repick_id
+      </span>
+    </header>
+    <div class="middle">
+      <div class="eyebrow">Turn clutter into cash</div>
+      <h1>See it.<br/><span class="red">Pick it.</span></h1>
+      <div class="sub">Send <b>3 photos</b> of your jacket &amp; get a <b>cash offer in hours</b>. We handle shipping &amp; payouts.</div>
+    </div>
+    <footer>
+      <div class="cta">Send your photos</div>
+      <div class="micro">Replies within minutes · Jakarta</div>
+    </footer>
+  </div>
+</body>
+</html>
