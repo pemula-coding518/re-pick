@@ -9,6 +9,7 @@ import {
 import { ShaderBackground } from "@/components/ui/liquid-metal-noir";
 import { LiquidGlassButton } from "@/components/ui/liquid-glass-button";
 import { scrollToId } from "@/lib/scroll";
+import { useLanguage } from "@/lib/i18n";
 
 const container = {
   hidden: {},
@@ -26,6 +27,8 @@ const item = {
 
 
 export function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section id="top" className="relative min-h-dvh overflow-hidden bg-onyx">
       <ShaderBackground className="absolute inset-0" />
@@ -55,7 +58,7 @@ export function Hero() {
         <motion.div variants={item}>
           <span className="inline-flex items-center gap-3 rounded-full border border-chiffon/25 bg-black/40 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.32em] text-chiffon/90 backdrop-blur-md md:text-[11px]">
             <span className="h-2 w-2 rounded-full bg-ember shadow-[0_0_8px_rgba(255,106,80,0.8)]" />
-            Repick — Preloved Jacket Buyback
+            {t.hero.badge}
           </span>
         </motion.div>
 
@@ -64,10 +67,10 @@ export function Hero() {
           className="mt-8 font-display text-[14vw] uppercase leading-[0.95] tracking-tight sm:text-7xl md:text-8xl xl:text-[8.5rem]"
         >
           <span className="text-chiffon drop-shadow-[0_4px_24px_rgba(0,0,0,0.65)]">
-            See It.
+            {t.hero.taglineA}
           </span>{" "}
           <span className="bg-gradient-to-b from-[#FF7A5C] via-[#E2230F] to-milano bg-clip-text text-transparent drop-shadow-[0_4px_24px_rgba(169,14,2,0.4)]">
-            Pick It.
+            {t.hero.taglineB}
           </span>
         </motion.h1>
 
@@ -75,8 +78,7 @@ export function Hero() {
           variants={item}
           className="mt-6 max-w-xl text-balance text-base leading-relaxed text-chiffon/75 md:text-lg"
         >
-          Turn your preloved outerwear into instant cash. We buy, restore, and
-          rehome iconic vintage jackets.
+          {t.hero.sub}
         </motion.p>
 
         <motion.div
@@ -84,11 +86,11 @@ export function Hero() {
           className="mt-10 flex w-full flex-col items-center justify-center gap-4 sm:w-auto sm:flex-row"
         >
           <LiquidGlassButton size="lg" onClick={() => scrollToId("how-it-works")}>
-            Sell Your Jacket
+            {t.hero.ctaPrimary}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </LiquidGlassButton>
           <LiquidGlassButton size="lg" variant="ghost" onClick={() => scrollToId("drops")}>
-            Browse Recent Drops
+            {t.hero.ctaSecondary}
           </LiquidGlassButton>
         </motion.div>
 
@@ -97,15 +99,15 @@ export function Hero() {
           className="mt-12 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] font-medium uppercase tracking-[0.22em] text-chiffon/65 md:text-xs"
         >
           <span className="inline-flex items-center gap-2">
-            <Shirt className="h-4 w-4 text-ember" /> 1+ Jackets Rescued
+            <Shirt className="h-4 w-4 text-ember" /> {t.hero.stat1}
           </span>
           <span className="hidden h-1 w-1 rounded-full bg-chiffon/30 sm:block" />
           <span className="inline-flex items-center gap-2">
-            <Timer className="h-4 w-4 text-ember" /> 24-Hour Offers
+            <Timer className="h-4 w-4 text-ember" /> {t.hero.stat2}
           </span>
           <span className="hidden h-1 w-1 rounded-full bg-chiffon/30 sm:block" />
           <span className="inline-flex items-center gap-2">
-            <BadgeCheck className="h-4 w-4 text-ember" /> 100% Authentic
+            <BadgeCheck className="h-4 w-4 text-ember" /> {t.hero.stat3}
           </span>
         </motion.div>
       </motion.div>

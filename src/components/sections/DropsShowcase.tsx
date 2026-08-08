@@ -3,31 +3,57 @@ import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { categories, products, type CategoryId, type Product } from "@/data/products";
+import { products, type CategoryId, type Product } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { scrollToId } from "@/lib/scroll";
+import {
+  categoryLabel,
+  getCategories,
+  productMeta,
+  productTitle,
+  useLanguage,
+} from "@/lib/i18n";
+
+function Badge({ badge }: { badge: Product["badge"] }) {
+  if (badge === "JUST BOUGHT") {
+    return (
+      <span className="absolute left-4 top-4 rounded-full bg-milano px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon shadow-[0_4px_16px_rgba(169,14,2,0.5)]">
+        {badge}
+      </span>
+    );
+  }
+  return (
+    <span className="absolute left-4 top-4 rounded-full border border-chiffon/60 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon backdrop-blur-sm">
+      {badge}
+    </span>
+  );
+}
 
 function ProductCard({ product }: { product: Product }) {
-  const sold = product.sold;
+  const { t } = useLanguage();
+  const title = productTitle(product.id, t);
+  const meta = productMeta(product.id, t);
+  const cat = categoryLabel(product.category, t);
 
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition-all duration-500 hover:-translate-y-1.5 hover:border-chiffon/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
       <div className="relative aspect-[4/5] overflow-hidden bg-carbon">
         <img
           src={product.image}
-          alt={product.title}
+          alt={title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
 
-        {sold && (
+        {product.sold && (
           <span className="absolute left-4 top-4 rounded-full border border-chiffon/35 bg-onyx/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon backdrop-blur-sm">
-            Sold Out
+            {t.drops.soldOut}
           </span>
         )}
+        {!product.sold && <Badge badge={product.badge} />}
         <span className="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-chiffon/70 backdrop-blur-sm">
-          {product.category}
+          {cat}
         </span>
 
         {/* Hover CTA overlay — always visible on touch screens */}
@@ -37,29 +63,27 @@ function ProductCard({ product }: { product: Product }) {
             onClick={() => scrollToId("how-it-works")}
             className="flex min-h-11 w-full items-center justify-center rounded-full border border-chiffon/40 bg-black/50 text-xs font-semibold uppercase tracking-[0.2em] text-chiffon backdrop-blur-md transition-colors hover:border-chiffon hover:bg-milano"
           >
-            Get Similar Quote
+            {t.drops.quoteCta}
           </button>
         </div>
       </div>
 
       <div className="p-5">
-        <h3 className="text-sm font-semibold leading-snug text-chiffon">
-          {product.title}
-        </h3>
-        <p className="mt-1.5 text-xs text-chiffon/65">{product.meta}</p>
-        {sold ? (
+        <h3 className="text-sm font-semibold leading-snug text-chiffon">{title}</h3>
+        <p className="mt-1.5 text-xs text-chiffon/65">{meta}</p>
+        {product.sold ? (
           <>
             <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3">
               <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/60">
-                Status
+                {t.drops.statusLabel}
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-chiffon/50">
-                Sold Out
+                {t.drops.soldOut}
               </span>
             </div>
             <div className="mt-1.5 flex items-center justify-between">
               <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/45">
-                Last Valuation
+                {t.drops.lastValuation}
               </span>
               <span className="font-semibold tabular-nums text-chiffon/45 line-through">
                 {product.valuation}
@@ -69,7 +93,7 @@ function ProductCard({ product }: { product: Product }) {
         ) : (
           <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3">
             <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/60">
-              Cash Valuation
+              {t.drops.valuationLabel}
             </span>
             <span className="font-semibold tabular-nums text-chiffon">
               {product.valuation}
@@ -82,6 +106,8 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 export function DropsShowcase() {
+  const { t } = useLanguage();
+  const categories = getCategories(t);
   const [active, setActive] = useState<CategoryId>("all");
   const shown = active === "all" ? products : products.filter((p) => p.category === active);
 
@@ -89,13 +115,9 @@ export function DropsShowcase() {
     <section id="drops" className="relative scroll-mt-24 bg-carbon px-6 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
-          eyebrow="The Inventory"
-          title={
-            <>
-              Curated Outerwear <span className="text-ember">Drops</span>
-            </>
-          }
-          sub="Fresh buys restocked every week — see what just sold, and what it would have paid you to sell it."
+          eyebrow={t.drops.eyebrow}
+          title={t.drops.title}
+          sub={t.drops.sub}
         />
 
         <FadeIn className="mb-12 flex flex-wrap justify-center gap-3">
@@ -103,7 +125,7 @@ export function DropsShowcase() {
             <button
               key={cat.id}
               type="button"
-              onClick={() => setActive(cat.id)}
+              onClick={() => setActive(cat.id as CategoryId)}
               aria-pressed={active === cat.id}
               className={cn(
                 "inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300",
@@ -119,7 +141,7 @@ export function DropsShowcase() {
 
         {/* Screen-reader announcement when the filter changes */}
         <p aria-live="polite" role="status" className="sr-only">
-          Showing {shown.length} of {products.length} drops.
+          {t.drops.showing(shown.length, products.length)}
         </p>
 
         <div
@@ -127,9 +149,7 @@ export function DropsShowcase() {
           className="mb-5 flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.25em] text-chiffon/60"
         >
           <span className="h-px w-8 bg-chiffon/20" />
-          <span>
-            {shown.length} of {products.length} drops
-          </span>
+          <span>{t.drops.count(shown.length, products.length)}</span>
           <span className="h-px w-8 bg-chiffon/20" />
         </div>
 
@@ -151,7 +171,7 @@ export function DropsShowcase() {
             className="group inline-flex items-center gap-2 text-sm font-medium text-chiffon/70 transition-colors hover:text-chiffon"
           >
             <Quote className="h-4 w-4 text-ember" />
-            Have a similar piece? Get an offer in hours
+            {t.drops.footerLink}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
         </FadeIn>

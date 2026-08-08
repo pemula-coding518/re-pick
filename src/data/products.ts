@@ -3,61 +3,61 @@ import tracktopF1la from "@/images/tracktop-f1la.webp";
 import tracktopK4ppa from "@/images/tracktop-k4ppa.webp";
 import windbreakerK4ppa from "@/images/windbreaker-k4ppa.webp";
 
-export type CategoryId = "all" | "hoodies" | "tracktops" | "windbreakers";
+export type ProductBadge = "JUST BOUGHT" | "CURATED DROP";
+
+/** Stable, language-neutral category ids — labels live in the i18n dictionaries. */
+export type ProductCategory = "hoodies" | "tracktops" | "windbreakers";
+
+export type CategoryId = "all" | ProductCategory;
 
 export type Product = {
   id: number;
-  title: string;
-  category: Exclude<CategoryId, "all">;
+  category: ProductCategory;
   image: string;
-  /** All current drops have already been sold. */
-  sold: boolean;
+  badge: ProductBadge;
+  /** IDR valuation range. */
   valuation: string;
-  meta: string;
+  sold: boolean;
 };
 
-export const categories: { id: CategoryId; label: string }[] = [
-  { id: "all", label: "All Drops" },
-  { id: "hoodies", label: "Zip Hoodies" },
-  { id: "tracktops", label: "Track Tops" },
-  { id: "windbreakers", label: "Windbreakers" },
+export const categories: { id: CategoryId }[] = [
+  { id: "all" },
+  { id: "hoodies" },
+  { id: "tracktops" },
+  { id: "windbreakers" },
 ];
 
 export const products: Product[] = [
   {
     id: 1,
-    title: "Unisex Zip Hoodie",
-    category: "hoodies",
-    image: hoodzipp,
-    sold: true,
-    valuation: "$25 – $45",
-    meta: "Heavyweight fleece · YKK zip · size M",
+    category: "windbreakers",
+    image: windbreakerK4ppa,
+    badge: "JUST BOUGHT",
+    valuation: "Rp 120.000 – Rp 150.000",
+    sold: false,
   },
   {
     id: 2,
-    title: "Raglan Track Top",
-    category: "tracktops",
-    image: tracktopF1la,
-    sold: true,
-    valuation: "$20 – $40",
-    meta: "Zip-up track top · raglan sleeves · size L",
+    category: "hoodies",
+    image: hoodzipp,
+    badge: "CURATED DROP",
+    valuation: "Rp 150.000 – Rp 185.000",
+    sold: false,
   },
   {
     id: 3,
-    title: "Kappa Track Top",
     category: "tracktops",
     image: tracktopK4ppa,
-    sold: true,
-    valuation: "$35 – $65",
-    meta: "Contrast piping · retro fit · size L",
+    badge: "JUST BOUGHT",
+    valuation: "Rp 100.000 – Rp 140.000",
+    sold: false,
   },
   {
     id: 4,
-    title: "Kappa Windbreaker",
-    category: "windbreakers",
-    image: windbreakerK4ppa,
-    sold: true,
-    valuation: "$40 – $75",
-    meta: "Nylon shell · packable · size M",
+    category: "tracktops",
+    image: tracktopF1la,
+    badge: "CURATED DROP",
+    valuation: "Rp 160.000 – Rp 200.000",
+    sold: false,
   },
 ];

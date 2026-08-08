@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { Instagram } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { IG_URL } from "@/lib/scroll";
+import { useLanguage } from "@/lib/i18n";
 
 export function InstagramCTA() {
+  const { t } = useLanguage();
+
   return (
     <section id="instagram" className="scroll-mt-24 bg-onyx px-6 py-24 md:py-32">
       <FadeIn>
@@ -24,18 +27,19 @@ export function InstagramCTA() {
 
           <div className="relative">
             <span className="inline-flex items-center gap-2 rounded-full border border-chiffon/30 bg-black/20 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-chiffon backdrop-blur-sm">
-              <Instagram className="h-3.5 w-3.5" /> @repick_id
+              <Instagram className="h-3.5 w-3.5" /> {t.instagram.eyebrow}
             </span>
 
             <h2 className="mx-auto mt-6 max-w-3xl font-display text-4xl uppercase leading-[1.05] tracking-tight text-chiffon md:text-6xl">
-              Want a faster quote?{" "}
-              <span className="bg-chiffon px-3 text-milano">Send us a DM</span>{" "}
-              right now.
+              {t.instagram.headlineA}{" "}
+              <span className="bg-chiffon px-3 text-milano">
+                {t.instagram.headlineHighlight}
+              </span>{" "}
+              {t.instagram.headlineB}
             </h2>
 
             <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-chiffon/85 md:text-base">
-              Our team replies within minutes — send photos of your jacket and
-              get a cash offer without the wait.
+              {t.instagram.sub}
             </p>
 
             <div className="mt-9 flex justify-center">
@@ -48,7 +52,7 @@ export function InstagramCTA() {
                 className="inline-flex items-center gap-2.5 rounded-full bg-chiffon px-8 py-4 text-sm font-bold uppercase tracking-[0.15em] text-milano shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-colors hover:bg-white"
               >
                 <Instagram className="h-5 w-5" />
-                Message @repick_id
+                {t.instagram.cta}
               </motion.a>
             </div>
           </div>

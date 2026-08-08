@@ -1,16 +1,15 @@
 import { useId } from "react";
 import { Instagram } from "lucide-react";
 import { IG_URL } from "@/lib/scroll";
-
-const links = [
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Drops", href: "#drops" },
-  { label: "Why Us", href: "#why" },
-  { label: "Instagram", href: IG_URL, external: true },
-];
+import { useLanguage } from "@/lib/i18n";
 
 export function Footer() {
   const gradientId = useId();
+  const { t } = useLanguage();
+  const links = t.footer.links.map((link) =>
+    link.external ? { ...link, href: IG_URL } : link
+  );
+
   return (
     <footer className="border-t border-white/10 bg-onyx px-6 pb-32 pt-14 md:pb-36">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center">
@@ -57,8 +56,7 @@ export function Footer() {
             </span>
           </div>
           <p className="mt-3 max-w-xs text-sm italic leading-relaxed text-chiffon/65">
-            “See It. Pick It.” — Preloved jacket buyback &amp; curated vintage
-            drops.
+            {t.footer.tagline}
           </p>
         </div>
 
@@ -89,8 +87,10 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-10 flex max-w-6xl flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-xs text-chiffon/55 md:flex-row">
-        <span>© {new Date().getFullYear()} Repick. All rights reserved.</span>
-        <span>Jakarta, Indonesia — Worldwide shipping</span>
+        <span>
+          © {new Date().getFullYear()} Repick. {t.footer.rights}
+        </span>
+        <span>{t.footer.location}</span>
       </div>
     </footer>
   );

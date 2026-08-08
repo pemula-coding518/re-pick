@@ -1,40 +1,45 @@
 import { Home, Instagram, Package, ShieldCheck, Sparkles } from "lucide-react";
 import { Dock, DockIcon, DockItem, DockLabel } from "@/components/ui/dock";
+import { LangSwitcher } from "@/components/ui/lang-switcher";
 import { IG_URL, scrollToId, scrollToTop } from "@/lib/scroll";
-
-const dockItems = [
-  {
-    title: "Home",
-    icon: Home,
-    action: scrollToTop,
-  },
-  {
-    title: "Sell Jacket",
-    icon: Package,
-    action: () => scrollToId("how-it-works"),
-  },
-  {
-    title: "Drops",
-    icon: Sparkles,
-    action: () => scrollToId("drops"),
-  },
-  {
-    title: "Why Us",
-    icon: ShieldCheck,
-    action: () => scrollToId("why"),
-  },
-  {
-    title: "Instagram",
-    icon: Instagram,
-    href: IG_URL,
-  },
-];
+import { useLanguage } from "@/lib/i18n";
 
 export function AppleStyleDock() {
+  const { t } = useLanguage();
+
+  const dockItems = [
+    {
+      title: t.dock.home,
+      icon: Home,
+      action: scrollToTop,
+    },
+    {
+      title: t.dock.sell,
+      icon: Package,
+      action: () => scrollToId("how-it-works"),
+    },
+    {
+      title: t.dock.drops,
+      icon: Sparkles,
+      action: () => scrollToId("drops"),
+    },
+    {
+      title: t.dock.why,
+      icon: ShieldCheck,
+      action: () => scrollToId("why"),
+    },
+    {
+      title: t.dock.instagram,
+      icon: Instagram,
+      href: IG_URL,
+    },
+  ];
+
   return (
     <div className="fixed bottom-4 left-1/2 z-50 max-w-full -translate-x-1/2 px-3">
       <Dock
-        className="items-end gap-3 border border-chiffon/20 bg-neutral-900/80 px-3 pb-3 shadow-[0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-md"
+        aria-label={t.dock.toolbar}
+        className="items-end gap-3 border border-chiffon/20 bg-neutral-900/80 px-3 pb-3 shadow-[0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-md sm:gap-3 [@media(max-width:380px)]:gap-2 [@media(max-width:380px)]:px-2.5"
       >
         {dockItems.map((item) => {
           const Icon = item.icon;
@@ -55,6 +60,7 @@ export function AppleStyleDock() {
             </DockItem>
           );
         })}
+        <LangSwitcher />
       </Dock>
     </div>
   );

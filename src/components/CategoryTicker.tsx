@@ -1,15 +1,10 @@
 import { Sparkles } from "lucide-react";
-
-const tickerItems = [
-  "Vintage Leather",
-  "Flight Bombers",
-  "Carhartt Workwear",
-  "Rare Denim",
-  "90s Windbreakers",
-  "Streetwear Icons",
-];
+import { useLanguage } from "@/lib/i18n";
 
 export function CategoryTicker() {
+  const { t } = useLanguage();
+  const tickerItems = t.ticker;
+
   const row = (key: string) => (
     <div key={key} className="flex shrink-0 items-center gap-10 pr-10">
       {tickerItems.map((label) => (

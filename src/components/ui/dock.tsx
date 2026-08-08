@@ -33,6 +33,8 @@ type DockProps = {
   panelHeight?: number;
   magnification?: number;
   spring?: SpringOptions;
+  /** Accessible label for the toolbar. */
+  "aria-label"?: string;
 };
 type DockItemProps = {
   className?: string;
@@ -85,6 +87,7 @@ function Dock({
   magnification = DEFAULT_MAGNIFICATION,
   distance = DEFAULT_DISTANCE,
   panelHeight = DEFAULT_PANEL_HEIGHT,
+  "aria-label": ariaLabel = "Application dock",
 }: DockProps) {
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
@@ -116,7 +119,7 @@ function Dock({
         )}
         style={{ height: panelHeight }}
         role="toolbar"
-        aria-label="Application dock"
+        aria-label={ariaLabel}
       >
         <DockProvider value={{ mouseX, spring, distance, magnification }}>
           {children}
