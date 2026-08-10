@@ -92,6 +92,16 @@ const id = {
     showing: (n: number, total: number) => `Menampilkan ${n} dari ${total} drop.`,
     count: (n: number, total: number) => `${n} dari ${total} drop`,
   },
+  modal: {
+    viewDetails: "Lihat Detail",
+    close: "Tutup",
+    front: "Depan",
+    back: "Belakang",
+    gallery: "Galeri foto produk",
+    swipeHint: "Geser untuk lihat sisi lain",
+    soldNote:
+      "Jaket ini sudah laku. Kirim jaketmu dan dapatkan penawaran serupa dalam hitungan jam.",
+  },
   why: {
     eyebrow: "Kepercayaan & Jaminan",
     title: "Mengapa Jual di Repick?",
@@ -226,6 +236,16 @@ const en: typeof id = {
     lastValuation: "Last Valuation",
     showing: (n: number, total: number) => `Showing ${n} of ${total} drops.`,
     count: (n: number, total: number) => `${n} of ${total} drops`,
+  },
+  modal: {
+    viewDetails: "View Details",
+    close: "Close",
+    front: "Front",
+    back: "Back",
+    gallery: "Product photo gallery",
+    swipeHint: "Swipe to see the other side",
+    soldNote:
+      "This piece has sold. Send us your jacket and get a similar quote within hours.",
   },
   why: {
     eyebrow: "Trust & Guarantee",

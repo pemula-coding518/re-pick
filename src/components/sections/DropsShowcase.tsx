@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { ProductModal } from "@/components/ui/product-modal";
 import { products, type CategoryId, type Product } from "@/data/products";
 import { cn } from "@/lib/utils";
-import { scrollToId } from "@/lib/scroll";
 import {
   categoryLabel,
   getCategories,
@@ -29,7 +29,7 @@ function Badge({ badge }: { badge: Product["badge"] }) {
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, onOpen }: { product: Product; onOpen: () => void }) {
   const { t } = useLanguage();
   const title = productTitle(product.id, t);
   const meta = productMeta(product.id, t);
@@ -37,14 +37,21 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition-all duration-500 hover:-translate-y-1.5 hover:border-chiffon/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-      <div className="relative aspect-[4/5] overflow-hidden bg-carbon">
+      {/* Photo — the whole image is the "view details" trigger */}
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={`${t.modal.viewDetails}: ${title}`}
+        aria-haspopup="dialog"
+        className="relative block aspect-[4/5] w-full overflow-hidden bg-carbon text-left"
+      >
         <img
-          src={product.image}
+          src={product.images.front}
           alt={title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
 
         {product.sold && (
           <span className="absolute left-4 top-4 rounded-full border border-chiffon/35 bg-onyx/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon backdrop-blur-sm">
@@ -56,17 +63,14 @@ function ProductCard({ product }: { product: Product }) {
           {cat}
         </span>
 
-        {/* Hover CTA overlay — always visible on touch screens */}
-        <div className="absolute inset-x-4 bottom-4 max-md:translate-y-0 max-md:opacity-100 md:translate-y-6 md:opacity-0 md:transition-all md:duration-500 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-          <button
-            type="button"
-            onClick={() => scrollToId("how-it-works")}
-            className="flex min-h-11 w-full items-center justify-center rounded-full border border-chiffon/40 bg-black/50 text-xs font-semibold uppercase tracking-[0.2em] text-chiffon backdrop-blur-md transition-colors hover:border-chiffon hover:bg-milano"
-          >
-            {t.drops.quoteCta}
-          </button>
-        </div>
-      </div>
+        {/* View-details affordance — visible on touch, appears on hover on desktop */}
+        <span className="absolute inset-x-4 bottom-4 flex max-md:translate-y-0 max-md:opacity-100 md:translate-y-6 md:opacity-0 md:transition-all md:duration-500 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+          <span className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-chiffon/40 bg-black/50 text-xs font-semibold uppercase tracking-[0.2em] text-chiffon backdrop-blur-md transition-colors duration-300 group-hover:border-chiffon group-hover:bg-milano">
+            {t.modal.viewDetails}
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </span>
+        </span>
+      </button>
 
       <div className="p-5">
         <h3 className="text-sm font-semibold leading-snug text-chiffon">{title}</h3>
@@ -109,6 +113,7 @@ export function DropsShowcase() {
   const { t } = useLanguage();
   const categories = getCategories(t);
   const [active, setActive] = useState<CategoryId>("all");
+  const [selected, setSelected] = useState<Product | null>(null);
   const shown = active === "all" ? products : products.filter((p) => p.category === active);
 
   return (
@@ -161,7 +166,7 @@ export function DropsShowcase() {
           className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
           {shown.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onOpen={() => setSelected(product)} />
           ))}
         </motion.div>
 
@@ -176,6 +181,9 @@ export function DropsShowcase() {
           </a>
         </FadeIn>
       </div>
+
+      {/* Rendered as a section sibling so no transformed ancestor breaks `fixed` */}
+      <ProductModal product={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
