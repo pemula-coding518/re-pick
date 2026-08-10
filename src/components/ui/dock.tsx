@@ -45,6 +45,8 @@ type DockItemProps = {
   href?: string;
   /** Accessible name for the toolbar button. */
   "aria-label"?: string;
+  /** Scroll-spy highlight: rings the item red, pops the icon, adds a dot. */
+  active?: boolean;
 };
 type DockLabelProps = {
   className?: string;
@@ -129,7 +131,14 @@ function Dock({
   );
 }
 
-function DockItem({ children, className, onClick, href, "aria-label": ariaLabel }: DockItemProps) {
+function DockItem({
+  children,
+  className,
+  onClick,
+  href,
+  "aria-label": ariaLabel,
+  active = false,
+}: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   const { distance, magnification, mouseX, spring } = useDock();
@@ -161,6 +170,8 @@ function DockItem({ children, className, onClick, href, "aria-label": ariaLabel 
     <motion.div
       ref={ref}
       style={{ width }}
+      animate={{ scale: active ? 1.14 : 1 }}
+      transition={{ type: "spring", stiffness: 320, damping: 18 }}
       onHoverStart={() => isHovered.set(1)}
       onHoverEnd={() => isHovered.set(0)}
       onFocus={() => isHovered.set(1)}
@@ -174,7 +185,9 @@ function DockItem({ children, className, onClick, href, "aria-label": ariaLabel 
       }}
       className={cn(
         "relative inline-flex cursor-pointer items-center justify-center outline-none",
-        className
+        className,
+        active &&
+          "bg-milano/15 shadow-[0_0_22px_rgba(169,14,2,0.5)] ring-2 ring-milano/70"
       )}
       tabIndex={0}
       role="button"
@@ -182,6 +195,17 @@ function DockItem({ children, className, onClick, href, "aria-label": ariaLabel 
     >
       {Children.map(children, (child) =>
         cloneElement(child as React.ReactElement, { width, isHovered })
+      )}
+      {/* Active-section indicator dot (iOS-style) */}
+      {active && (
+        <motion.span
+          aria-hidden
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 400, damping: 22 }}
+          className="absolute -bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-milano shadow-[0_0_10px_rgba(169,14,2,0.95)]"
+        />
       )}
     </motion.div>
   );
