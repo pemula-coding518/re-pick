@@ -3,7 +3,7 @@ import { ArrowRight, MoveHorizontal, X } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { Product } from "@/data/products";
 import { cn } from "@/lib/utils";
-import { scrollToId } from "@/lib/scroll";
+import { IG_DM_URL } from "@/lib/scroll";
 import { categoryLabel, productMeta, productTitle, useLanguage } from "@/lib/i18n";
 import { LiquidGlassButton } from "@/components/ui/liquid-glass-button";
 
@@ -102,10 +102,12 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
     }
   };
 
-  const title = product ? productTitle(product.id, t) : "";
-  const meta = product ? productMeta(product.id, t) : "";
+  const title = product ? product.title ?? productTitle(product.id, t) : "";
+  const meta = product ? product.meta ?? productMeta(product.id, t) : "";
   const cat = product ? categoryLabel(product.category, t) : "";
   const showBackToggle = product?.images.back != null;
+  const value = product?.price ?? product?.valuation;
+  const valueLabel = product?.price ? t.drops.priceLabel : t.drops.lastValuation;
 
   /** Swipe left → next view, swipe right → previous. Rubber-bands otherwise. */
   const handleDragEnd = (_: unknown, info: PanInfo) => {
@@ -271,16 +273,18 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
               </h2>
               <p className="mt-2.5 text-sm leading-relaxed text-chiffon/65">{meta}</p>
 
-              <span
-                className={cn(
-                  "mt-4 inline-flex w-fit items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]",
-                  product.badge === "JUST BOUGHT"
-                    ? "bg-milano/15 text-ember ring-1 ring-inset ring-milano/40"
-                    : "border border-chiffon/30 text-chiffon/70"
-                )}
-              >
-                {product.badge}
-              </span>
+              {product.badge && (
+                <span
+                  className={cn(
+                    "mt-4 inline-flex w-fit items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]",
+                    product.badge === "JUST BOUGHT"
+                      ? "bg-milano/15 text-ember ring-1 ring-inset ring-milano/40"
+                      : "border border-chiffon/30 text-chiffon/70"
+                  )}
+                >
+                  {product.badge}
+                </span>
+              )}
 
               <div className="mt-auto pt-7">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -294,25 +298,27 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/45">
-                      {t.drops.lastValuation}
+                      {valueLabel}
                     </span>
-                    <span className="text-lg font-semibold tabular-nums text-chiffon/45 line-through md:text-xl">
-                      {product.valuation}
+                    <span
+                      className={cn(
+                        "text-lg font-semibold tabular-nums md:text-xl",
+                        product.sold ? "text-chiffon/45 line-through" : "text-chiffon"
+                      )}
+                    >
+                      {value ?? "—"}
                     </span>
                   </div>
                 </div>
 
-                <p className="mt-3 text-xs leading-relaxed text-chiffon/55">{t.modal.soldNote}</p>
+                {product.sold && (
+                  <p className="mt-3 text-xs leading-relaxed text-chiffon/55">
+                    {t.modal.soldNote}
+                  </p>
+                )}
 
-                <LiquidGlassButton
-                  className="mt-4 w-full"
-                  onClick={() => {
-                    onClose();
-                    // Scroll after the exit animation so the target is visible.
-                    window.setTimeout(() => scrollToId("how-it-works"), 200);
-                  }}
-                >
-                  {t.drops.quoteCta}
+                <LiquidGlassButton href={IG_DM_URL} className="mt-4 w-full">
+                  {t.modal.cta}
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </LiquidGlassButton>
               </div>

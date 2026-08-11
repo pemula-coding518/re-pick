@@ -7,6 +7,11 @@ dist
 # Local environment
 .freebuff
 
+# Secrets — never commit env files (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
 # Logs
 *.log
 npm-debug.log*

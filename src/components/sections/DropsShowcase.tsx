@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Quote } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ProductModal } from "@/components/ui/product-modal";
 import { products, type CategoryId, type Product } from "@/data/products";
+import { isSupabaseConfigured, supabase, toCatalogProduct } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import {
   categoryLabel,
@@ -14,7 +15,7 @@ import {
   useLanguage,
 } from "@/lib/i18n";
 
-function Badge({ badge }: { badge: Product["badge"] }) {
+function Badge({ badge }: { badge: NonNullable<Product["badge"]> }) {
   if (badge === "JUST BOUGHT") {
     return (
       <span className="absolute left-4 top-4 rounded-full bg-milano px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon shadow-[0_4px_16px_rgba(169,14,2,0.5)]">
@@ -31,9 +32,10 @@ function Badge({ badge }: { badge: Product["badge"] }) {
 
 function ProductCard({ product, onOpen }: { product: Product; onOpen: () => void }) {
   const { t } = useLanguage();
-  const title = productTitle(product.id, t);
-  const meta = productMeta(product.id, t);
+  const title = product.title ?? productTitle(product.id, t);
+  const meta = product.meta ?? productMeta(product.id, t);
   const cat = categoryLabel(product.category, t);
+  const value = product.price ?? product.valuation;
 
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition-all duration-500 hover:-translate-y-1.5 hover:border-chiffon/30 hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
@@ -54,11 +56,11 @@ function ProductCard({ product, onOpen }: { product: Product; onOpen: () => void
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
 
         {product.sold && (
-          <span className="absolute left-4 top-4 rounded-full border border-chiffon/35 bg-onyx/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon backdrop-blur-sm">
+          <span className="absolute left-4 top-4 rounded-full bg-milano px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-chiffon shadow-[0_4px_16px_rgba(169,14,2,0.5)]">
             {t.drops.soldOut}
           </span>
         )}
-        {!product.sold && <Badge badge={product.badge} />}
+        {!product.sold && product.badge && <Badge badge={product.badge} />}
         <span className="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 text-[10px] uppercase tracking-[0.15em] text-chiffon/70 backdrop-blur-sm">
           {cat}
         </span>
@@ -81,26 +83,26 @@ function ProductCard({ product, onOpen }: { product: Product; onOpen: () => void
               <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/60">
                 {t.drops.statusLabel}
               </span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-chiffon/50">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-ember">
                 {t.drops.soldOut}
               </span>
             </div>
             <div className="mt-1.5 flex items-center justify-between">
               <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/45">
-                {t.drops.lastValuation}
+                {product.price ? t.drops.priceLabel : t.drops.lastValuation}
               </span>
               <span className="font-semibold tabular-nums text-chiffon/45 line-through">
-                {product.valuation}
+                {value ?? "—"}
               </span>
             </div>
           </>
         ) : (
           <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3">
             <span className="text-[10px] uppercase tracking-[0.15em] text-chiffon/60">
-              {t.drops.valuationLabel}
+              {product.price ? t.drops.priceLabel : t.drops.valuationLabel}
             </span>
             <span className="font-semibold tabular-nums text-chiffon">
-              {product.valuation}
+              {value ?? "—"}
             </span>
           </div>
         )}
@@ -109,12 +111,55 @@ function ProductCard({ product, onOpen }: { product: Product; onOpen: () => void
   );
 }
 
+function SkeletonCard() {
+  return (
+    <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
+      <div className="aspect-[4/5] w-full animate-pulse bg-white/[0.06]" />
+      <div className="space-y-2.5 p-5">
+        <div className="h-3 w-3/4 animate-pulse rounded bg-white/[0.08]" />
+        <div className="h-2.5 w-1/2 animate-pulse rounded bg-white/[0.06]" />
+        <div className="h-2.5 w-2/3 animate-pulse rounded bg-white/[0.06]" />
+      </div>
+    </div>
+  );
+}
+
 export function DropsShowcase() {
   const { t } = useLanguage();
-  const categories = getCategories(t);
+  const chips = getCategories(t);
   const [active, setActive] = useState<CategoryId>("all");
   const [selected, setSelected] = useState<Product | null>(null);
-  const shown = active === "all" ? products : products.filter((p) => p.category === active);
+
+  /* Dynamic catalog: fetch from Supabase when configured; otherwise (or when
+     the fetch fails / the table is empty) fall back to the static catalog so
+     the section is never blank. */
+  const [items, setItems] = useState<Product[] | null>(() =>
+    isSupabaseConfigured ? null : products
+  );
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (cancelled) return;
+      if (!error && data && data.length > 0) {
+        setItems(data.map((row) => toCatalogProduct(row)));
+      } else {
+        setItems(products);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const loading = items === null;
+  const list = items ?? [];
+  const shown = active === "all" ? list : list.filter((p) => p.category === active);
 
   return (
     <section id="drops" className="relative scroll-mt-24 bg-carbon px-6 py-24 md:py-32">
@@ -126,7 +171,7 @@ export function DropsShowcase() {
         />
 
         <FadeIn className="mb-12 flex flex-wrap justify-center gap-3">
-          {categories.map((cat) => (
+          {chips.map((cat) => (
             <button
               key={cat.id}
               type="button"
@@ -146,7 +191,7 @@ export function DropsShowcase() {
 
         {/* Screen-reader announcement when the filter changes */}
         <p aria-live="polite" role="status" className="sr-only">
-          {t.drops.showing(shown.length, products.length)}
+          {t.drops.showing(shown.length, list.length)}
         </p>
 
         <div
@@ -154,21 +199,29 @@ export function DropsShowcase() {
           className="mb-5 flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.25em] text-chiffon/60"
         >
           <span className="h-px w-8 bg-chiffon/20" />
-          <span>{t.drops.count(shown.length, products.length)}</span>
+          <span>{t.drops.count(shown.length, list.length)}</span>
           <span className="h-px w-8 bg-chiffon/20" />
         </div>
 
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, ease: "easeOut" }}
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {shown.map((product) => (
-            <ProductCard key={product.id} product={product} onOpen={() => setSelected(product)} />
-          ))}
-        </motion.div>
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {shown.map((product) => (
+              <ProductCard key={product.id} product={product} onOpen={() => setSelected(product)} />
+            ))}
+          </motion.div>
+        )}
 
         <FadeIn delay={0.1} className="mt-12 flex justify-center">
           <a

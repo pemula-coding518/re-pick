@@ -3,6 +3,9 @@
 export const IG_URL =
   "https://www.instagram.com/repick_id?igsh=dWxvbDlxcHM3c2Ry";
 
+/** Deep link straight into the @repick_id Instagram DM thread. */
+export const IG_DM_URL = "https://ig.me/m/repick_id";
+
 /** Explicitly smooth scrolls only when the user hasn't asked to reduce motion. */
 function scrollBehavior(): ScrollBehavior {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches

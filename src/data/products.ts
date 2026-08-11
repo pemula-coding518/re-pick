@@ -8,8 +8,10 @@ import windbreakerK4ppa from "@/images/windbreaker-k4ppa.webp";
 
 export type ProductBadge = "JUST BOUGHT" | "CURATED DROP";
 
-/** Stable, language-neutral category ids — labels live in the i18n dictionaries. */
-export type ProductCategory = "hoodies" | "tracktops" | "windbreakers";
+/** Stable, language-neutral category ids — labels live in the i18n dictionaries.
+ *  "other" is used for Supabase rows whose category doesn't map to a chip
+ *  (they still appear under "All Drops"). */
+export type ProductCategory = "hoodies" | "tracktops" | "windbreakers" | "other";
 
 export type CategoryId = "all" | ProductCategory;
 
@@ -21,13 +23,21 @@ export type ProductImages = {
 };
 
 export type Product = {
-  id: number;
+  id: string;
   category: ProductCategory;
   images: ProductImages;
-  badge: ProductBadge;
-  /** IDR valuation range. */
-  valuation: string;
+  /** Provenance tag (static catalog only — dynamic rows show status instead). */
+  badge?: ProductBadge;
+  /** IDR valuation range (static catalog). */
+  valuation?: string;
   sold: boolean;
+  /* --- Dynamic (Supabase) fields — when present they override dict lookups --- */
+  /** DB title; falls back to the i18n dictionary for static products. */
+  title?: string;
+  /** Short line under the title (static: i18n meta; dynamic: DB description). */
+  meta?: string;
+  /** Single DB price (e.g. "Rp 150.000"); falls back to `valuation`. */
+  price?: string;
 };
 
 export const categories: { id: CategoryId }[] = [
@@ -39,7 +49,7 @@ export const categories: { id: CategoryId }[] = [
 
 export const products: Product[] = [
   {
-    id: 1,
+    id: "1",
     category: "windbreakers",
     images: { front: windbreakerK4ppa },
     badge: "JUST BOUGHT",
@@ -47,7 +57,7 @@ export const products: Product[] = [
     sold: true,
   },
   {
-    id: 2,
+    id: "2",
     category: "hoodies",
     images: { front: hoodzipp, back: hoodzippBack },
     badge: "CURATED DROP",
@@ -55,7 +65,7 @@ export const products: Product[] = [
     sold: true,
   },
   {
-    id: 3,
+    id: "3",
     category: "tracktops",
     images: { front: tracktopK4ppa, back: tracktopK4ppaBack },
     badge: "JUST BOUGHT",
@@ -63,7 +73,7 @@ export const products: Product[] = [
     sold: true,
   },
   {
-    id: 4,
+    id: "4",
     category: "tracktops",
     images: { front: tracktopF1la, back: tracktopF1laBack },
     badge: "CURATED DROP",

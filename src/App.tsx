@@ -1,5 +1,6 @@
 import { MotionConfig } from "framer-motion";
 import { LanguageProvider, useLanguage } from "@/lib/i18n";
+import { usePath } from "@/lib/router";
 import { Hero } from "@/components/sections/Hero";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { DropsShowcase } from "@/components/sections/DropsShowcase";
@@ -8,6 +9,7 @@ import { InstagramCTA } from "@/components/sections/InstagramCTA";
 import { Footer } from "@/components/sections/Footer";
 import { CategoryTicker } from "@/components/CategoryTicker";
 import { AppleStyleDock } from "@/components/AppleStyleDock";
+import { AdminApp } from "@/pages/admin/AdminApp";
 
 function SkipLink() {
   const { t } = useLanguage();
@@ -22,20 +24,29 @@ function SkipLink() {
 }
 
 export default function App() {
+  const path = usePath();
+  const isAdmin = path.startsWith("/admin");
+
   return (
     <LanguageProvider>
-      <SkipLink />
       <MotionConfig reducedMotion="user">
-        <main id="main" className="relative bg-onyx text-chiffon">
-          <Hero />
-          <CategoryTicker />
-          <HowItWorks />
-          <DropsShowcase />
-          <WhyRepick />
-          <InstagramCTA />
-          <Footer />
-          <AppleStyleDock />
-        </main>
+        {isAdmin ? (
+          <AdminApp />
+        ) : (
+          <>
+            <SkipLink />
+            <main id="main" className="relative bg-onyx text-chiffon">
+              <Hero />
+              <CategoryTicker />
+              <HowItWorks />
+              <DropsShowcase />
+              <WhyRepick />
+              <InstagramCTA />
+              <Footer />
+              <AppleStyleDock />
+            </main>
+          </>
+        )}
       </MotionConfig>
     </LanguageProvider>
   );

@@ -89,6 +89,8 @@ const id = {
     valuationLabel: "Kisaran Harga Beli",
     cashValuation: "Harga Beli",
     lastValuation: "Penawaran Terakhir",
+    priceLabel: "Harga",
+    otherCategory: "Lainnya",
     showing: (n: number, total: number) => `Menampilkan ${n} dari ${total} drop.`,
     count: (n: number, total: number) => `${n} dari ${total} drop`,
   },
@@ -101,6 +103,7 @@ const id = {
     swipeHint: "Geser untuk lihat sisi lain",
     soldNote:
       "Jaket ini sudah laku. Kirim jaketmu dan dapatkan penawaran serupa dalam hitungan jam.",
+    cta: "Ingin Jaket Seperti Ini? DM Instagram",
   },
   why: {
     eyebrow: "Kepercayaan & Jaminan",
@@ -234,6 +237,8 @@ const en: typeof id = {
     valuationLabel: "Cash Valuation",
     cashValuation: "Cash Valuation",
     lastValuation: "Last Valuation",
+    priceLabel: "Price",
+    otherCategory: "Other",
     showing: (n: number, total: number) => `Showing ${n} of ${total} drops.`,
     count: (n: number, total: number) => `${n} of ${total} drops`,
   },
@@ -246,6 +251,7 @@ const en: typeof id = {
     swipeHint: "Swipe to see the other side",
     soldNote:
       "This piece has sold. Send us your jacket and get a similar quote within hours.",
+    cta: "Want a Jacket Like This? DM Instagram",
   },
   why: {
     eyebrow: "Trust & Guarantee",
@@ -385,17 +391,24 @@ export function getCategories(t: Dict): { id: CategoryId; label: string }[] {
   });
 }
 
-export function productTitle(productId: number, t: Dict = dictionaries.id): string {
-  const entry = (t.products as Record<number, { title: string }>)[productId];
-  return entry?.title ?? `Product ${productId}`;
+export function productTitle(productId: string | number, t: Dict = dictionaries.id): string {
+  const key = Number(productId);
+  const entry = Number.isFinite(key)
+    ? (t.products as Record<number, { title: string }>)[key]
+    : undefined;
+  return entry?.title ?? (typeof productId === "string" ? productId : `Product ${productId}`);
 }
 
-export function productMeta(productId: number, t: Dict = dictionaries.id): string {
-  const entry = (t.products as Record<number, { meta: string }>)[productId];
+export function productMeta(productId: string | number, t: Dict = dictionaries.id): string {
+  const key = Number(productId);
+  const entry = Number.isFinite(key)
+    ? (t.products as Record<number, { meta: string }>)[key]
+    : undefined;
   return entry?.meta ?? "";
 }
 
 export function categoryLabel(categoryId: ProductCategory, t: Dict): string {
+  if (categoryId === "other") return t.drops.otherCategory;
   return t.categories.find((c) => c.id === categoryId)?.label ?? categoryId;
 }
 
